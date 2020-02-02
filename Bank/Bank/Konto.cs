@@ -10,14 +10,19 @@ namespace Bank
         public delegate Boolean MyDelegate(double p);
        
 
-        int accNumber;
-        string ownerName;
-        double balance;
+        public int accNumber;
+        public string ownerName;
+        public double balance;
         static double staticBalance;
-        public  Boolean Metoda(double ammount)
+        public  Boolean MetodaWyplaty(double ammount)
         {
             return ammount < balance;
         }
+        public Boolean MetodaWplaty(double ammount)
+        {
+            return ammount > 0;
+        }
+
 
         public Konto(int accNumber, string ownerName, double balance)
         {
@@ -26,11 +31,13 @@ namespace Bank
             this.balance = balance;
         }
 
+
         public Boolean payment(double amount)
         {
+            MyDelegate m = new MyDelegate(MetodaWplaty);
             try
             {
-                if (amount > 0)
+                if (MetodaWplaty(amount))
                 {
                     balance = balance + amount;
                     Console.WriteLine("Wplata udana. Nowy stan konta to : " + balance);
@@ -44,14 +51,26 @@ namespace Bank
                 return false;
             }
         }   
-        public Boolean withdraw(double amount)
+        public void withdraw(double amount)
         {
-            MyDelegate m = new MyDelegate(Metoda);
+
+            
+
+            if (withdrawMethod(amount))
+            {
+                Console.WriteLine("Wyplata udana. Nowy stan konta nr." + accNumber + " : " + balance);
+            }
+         
+        }
+
+        public Boolean withdrawMethod(double amount)
+        {
+            MyDelegate m = new MyDelegate(MetodaWyplaty);
             try
             {
 
 
-                if (m(amount) == false)
+                if (!m(amount))
                 {
                     Console.WriteLine("Brak srodkow na Koncie Stan " + balance);
                     Console.WriteLine("Chcesz wyplacic " + amount);
@@ -59,7 +78,7 @@ namespace Bank
                 else
                 {
                     balance = balance - amount;
-                    Console.WriteLine("Wyplata udana. Nowy stan konta nr." + accNumber + " : " + balance);
+                   
                 }
             }
             catch (ArrayTypeMismatchException e)
@@ -68,19 +87,6 @@ namespace Bank
                 return false;
             }
             return m(amount);
-        }
-
-        public Boolean transfer(Konto konto,double amount)
-        {
-            if (withdraw(amount) == true)
-            {
-                konto.balance = konto.balance + amount;
-                Console.WriteLine("Przelew na konto " + konto.accNumber +" zostalo zrealizowane");
-                Console.WriteLine("Nowy stan konta na ktore przelano to " + konto.balance);
-            }
-
-           return withdraw(amount);
-            
         }
 
        public void printInfo()
