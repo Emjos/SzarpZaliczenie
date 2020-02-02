@@ -13,7 +13,7 @@ namespace Bank
             Boolean check = kontoFrom.withdrawMethod(amount);
             if (check) 
             {
-                kontoTo.balance = kontoTo.balance + amount;
+                kontoTo.payment(amount);
                 Console.WriteLine("Przelew na konto " + kontoTo.accNumber + " zostalo zrealizowane");
                 Console.WriteLine("Nowy stan konta na ktore przelano to " + kontoTo.balance);
             }
